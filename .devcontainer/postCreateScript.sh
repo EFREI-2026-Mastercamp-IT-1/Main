@@ -4,7 +4,7 @@
 
 ## install
 
-uv venv && source .venv/bin/activate && uv pip sync requirements.txt
+uv venv && . .venv/bin/activate && uv pip sync requirements.txt
 
 ## forbid pip
 

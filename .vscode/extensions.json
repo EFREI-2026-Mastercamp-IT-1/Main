@@ -1,0 +1,14 @@
+{
+	"recommendations": [
+		"ms-python.python",
+		"ms-python.pylint",
+		"PWABuilder.pwa-studio",
+		"hbenl.vscode-test-explorer",
+		"ms-vscode.test-adapter-converter",
+		"yzhang.markdown-all-in-one",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"GitHub.vscode-pull-request-github",
+		"GitHub.copilot-chat",
+		"GitHub.copilot",
+	]
+}

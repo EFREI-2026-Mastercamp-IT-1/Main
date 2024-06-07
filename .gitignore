@@ -2,8 +2,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 
-static/
-
 ### Django ###
 *.log
 *.pot

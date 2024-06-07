@@ -1,3 +1,3 @@
 #!/bin/sh
 
-fastapi dev src/main.py
+fastapi dev

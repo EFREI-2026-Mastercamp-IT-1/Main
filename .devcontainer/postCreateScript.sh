@@ -15,3 +15,7 @@ alias pip="echo \"pip is forbidden, use 'uv pip' instead\""
 ### force
 
 alias force_pip="/usr/local/bin/pip"
+
+# give execute rights to
+
+find . -type f -iname "*.sh" -exec chmod +x {} \;

@@ -1,13 +1,12 @@
 class Station:
-    def __init__(self, id, stationName, isTerminus, x, y):
-        self.id = id
+    def __init__(self, stationName, isTerminus, x, y):
+        self.id = []
         self.stationName = stationName
         self.ligneNumber = []
         self.isTerminus = isTerminus
         self.x = x
         self.y = y
-        self.liaisons = []
-        
+                
 class Liaison:
     def __init__(self, station1, station2, time):
         self.station1 = station1
@@ -25,11 +24,13 @@ def read_metro_file(filename):
                 station_exists = False
                 for station in stations:
                     if station.stationName == stationName:
+                        station.id.append(int(id))
                         station.ligneNumber.append(ligneNumber)
                         station_exists = True
                         break
                 if not station_exists:
-                    stations.append(Station(int(id), stationName, isTerminus, 0 , 0))
+                    stations.append(Station( stationName, isTerminus, 0 , 0))
+                    stations[-1].id.append(int(id))
                     stations[-1].ligneNumber.append(ligneNumber)
             if line.startswith('E'):
                 _, stationid1, stationid2,time = line.strip().split(';')

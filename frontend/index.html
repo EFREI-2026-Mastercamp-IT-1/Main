@@ -17,34 +17,59 @@ const graph = new graphology.Graph();
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Hello, World!");
 
-    fetch('http://127.0.0.1:8000/stations', {
+    const stations =fetch('http://127.0.0.1:8000/stations', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())  // Convertir la réponse en JSON
-    .then(data => {
-        console.log(data);  // Afficher les données JSON dans la console
-        renderGraph(data);  // Appeler la fonction pour afficher le graphe
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error fetching stations:', error);
+        });
+
+    const liaisons = fetch('http://127.0.0.1:8000/liaisons', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
     })
-    .catch(error => {
-        console.error('Error fetching stations:', error);
-    });
+        .then(response => response.json())  
+        .catch(error => {
+            console.error('Error fetching liaison:', error);
+        });
+    
+        
+    Promise.all([stations, liaisons])
+        .then(([stations, liaisons]) => {
+            renderGraph(stations, liaisons);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
 
-    function renderGraph(data) {
+    function renderGraph(stations, liaisons) {
 
-        data.forEach(station => {
+        console.log(stations);
+        console.log(liaisons);
 
-            console.log(station);
+        stations.forEach(station => {
             graph.addNode(station["id"], { label: station["stationName"], x: station["x"], y: station["y"], size: 8, color: "black" });
         });
+
+        liaisons.forEach(liaison => {
+            graph.addEdge(liaison["station1"], liaison["station2"], { color: "blue" });
+        });
+
+
 
     }
     
 
 });
       const sigmaInstance = new Sigma(graph, document.getElementById("container"));
+
+    
 
 
     </script>

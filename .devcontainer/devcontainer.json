@@ -17,8 +17,17 @@
 				"GitHub.vscode-pull-request-github",
 				"GitHub.copilot-chat",
 				"GitHub.copilot",
+				"eamodio.gitlens"
 			]
 		}
 	},
-	"postCreateCommand": "sh .devcontainer/postCreateScript.sh",
+	/*
+		- https://code.visualstudio.com/docs/devcontainers/tips-and-tricks#_persisting-user-profile
+		- https: //github.com/microsoft/vscode-remote-release/issues/7690#issuecomment-2151850037
+	*/
+	// "mounts": [
+	// 	"source=profile-${localEnv:USER}${localEnv:USERNAME}-${devcontainerId},target=/home/vscode,type=volume", // persistent (named) volume for user profile
+	// 	"target=/home/vscode/.vscode-server,type=volume" // ephemeral volume for user-space VS Code extensions and dotfiles
+	// ],
+	"postCreateCommand": ". .devcontainer/postCreateScript.sh",
 }

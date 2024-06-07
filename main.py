@@ -18,13 +18,3 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/stations")
-def get_stations():
-    stations,liaisons = read_metro_file('static/metro.txt')
-    read_pospoints_file('./Version1/pospoints.txt', stations)
-    return stations
-
-@app.get("/liaisons")
-def get_liaisons():
-    stations,liaisons = read_metro_file('static/metro.txt')
-    return liaisons

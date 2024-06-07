@@ -8,14 +8,20 @@ class Station:
         self.y = y
         self.liaisons = []
         
+class Liaison:
+    def __init__(self, station1, station2, time):
+        self.station1 = station1
+        self.station2 = station2
+        self.time = time
+        
 
 def read_metro_file(filename):
     stations = []
+    liaisons = []
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f:
             if line.startswith('V'):
                 _, id, stationName, ligneNumber, isTerminus = line.strip().split(';')
-                # Vérifier si la station existe déjà dans la liste
                 station_exists = False
                 for station in stations:
                     if station.stationName == stationName:
@@ -25,8 +31,14 @@ def read_metro_file(filename):
                 if not station_exists:
                     stations.append(Station(int(id), stationName, isTerminus, 0 , 0))
                     stations[-1].ligneNumber.append(ligneNumber)
+            if line.startswith('E'):
+                _, stationid1, stationid2,time = line.strip().split(';')
+                liaisons.append(Liaison(int(stationid1), int(stationid2), int(time)))
+                                        
+                
+            
 
-    return stations
+    return stations, liaisons
 
 
 def read_pospoints_file(filename, stations):

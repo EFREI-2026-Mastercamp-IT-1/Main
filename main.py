@@ -24,6 +24,12 @@ def get_stations():
     read_pospoints_file('static/pospoints.txt', stations)
     return stations
 
+@app.get("/stations/{line_number}")
+def get_stations_by_line(line_number: str):
+    stations, _ = read_metro_file('static/metro.txt')
+    read_pospoints_file('static/pospoints.txt', stations)
+    return [station for station in stations if line_number in [ln.strip() for ln in station.ligneNumber]]
+
 @app.get("/liaisons")
 def get_liaisons():
     stations,liaisons = read_metro_file('static/metro.txt')

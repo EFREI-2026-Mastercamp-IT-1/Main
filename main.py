@@ -21,7 +21,7 @@ async def root():
 @app.get("/stations")
 def get_stations():
     stations,liaisons = read_metro_file('static/metro.txt')
-    read_pospoints_file('./Version1/pospoints.txt', stations)
+    read_pospoints_file('static/pospoints.txt', stations)
     return stations
 
 @app.get("/liaisons")

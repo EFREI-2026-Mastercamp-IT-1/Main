@@ -116,7 +116,7 @@ class pathways():
 
 
 class Node:
-    def __init__(self, id, label, x, y, size, color):
+    def __init__(self, id, label, x, y):
         self.id = id
         self.label = label
         self.x = x
@@ -125,33 +125,10 @@ class Node:
         self.color = "#000000"
 
 class Edge:
-    def __init__(self, id, source, target, label, size, color):
+    def __init__(self, id, source, target, label):
         self.id = id
         self.source = source
         self.target = target
         self.label = label
-        self.size = size
-        self.color = color
-
-# Create helper functions to transform your data into nodes and edges
-def create_nodes_from_stops(stops_list):
-    nodes = []
-    for stop in stops_list:
-        nodes.append(Node(
-            id=stop.stop_id,
-            label=stop.stop_name,
-            x=float(stop.stop_lon),
-            y=float(stop.stop_lat)
-        ))
-    return nodes
-
-def create_edges_from_pathways(pathways_list):
-    edges = []
-    for pathway in pathways_list:
-        edges.append(Edge(
-            id=pathway.pathway_id,
-            source=pathway.from_stop_id,
-            target=pathway.to_stop_id,
-            label=pathway.signposted_as
-        ))
-    return edges
+        self.size = 1.0
+        self.color = "#000000"

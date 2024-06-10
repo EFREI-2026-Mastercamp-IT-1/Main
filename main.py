@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from custom_parser import *
 from create_network import *
 
+## Lien de la base de donnée:
+## https://www.swisstransfer.com/d/cb521c72-9847-419f-9567-6c95aae4fca0
 
 app = FastAPI()
 

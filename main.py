@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from custom_parser import *
-
+from create_network import *
 
 
 app = FastAPI()
@@ -60,6 +60,14 @@ async def get_stop_extensions():
 async def get_pathways():
     return pathways_list
 
+
+@app.get("/nodes")
+async def get_nodes():
+    return create_nodes(stops_list)
+
+@app.get("/edges")
+async def get_edges():
+    return create_edges(pathways_list)
 
 
 

@@ -70,6 +70,13 @@ async def get_edges():
     return create_edges(pathways_list)
 
 
+@app.get("/network")
+async def get_network():
+    return {
+        "nodes": create_nodes(stops_list),
+        "edges": create_edges(pathways_list)
+    }
+
 
 
 

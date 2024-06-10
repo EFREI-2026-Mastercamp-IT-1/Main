@@ -1,5 +1,5 @@
 class agency():
-    def __init__(self, agency_id, agency_name, agency_url, agency_timezone, agency_lang, agency_phone, agency_email):
+    def __init__(self, agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_email,agency_fare_url):
         self.agency_id = agency_id
         self.agency_name = agency_name
         self.agency_url = agency_url
@@ -7,6 +7,7 @@ class agency():
         self.agency_lang = agency_lang
         self.agency_phone = agency_phone
         self.agency_email = agency_email
+        self.agency_fare_url = agency_fare_url
 
 class route():
     def __init__(self, route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color,route_sort_order):
@@ -22,7 +23,7 @@ class route():
         self.route_sort_order = route_sort_order
 
 class trips():
-    def __init__(self, route_id, service_id, trip_id, trip_headsign, trip_short_name ,direction_id, block_id, shape_id,wheelchair_accessible, bikes_allowed):
+    def __init__(self, route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,wheelchair_accessible,bikes_allowed):
         self.route_id = route_id
         self.service_id = service_id
         self.trip_id = trip_id
@@ -110,4 +111,5 @@ class pathways():
         self.min_width = min_width
         self.signposted_as = signposted_as
         self.reversed_signposted_as = reversed_signposted_as
+
 

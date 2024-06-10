@@ -59,9 +59,3 @@ async def get_stop_extensions():
 @app.get("/pathways")
 async def get_pathways():
     return pathways_list
-
-
-
-
-
-

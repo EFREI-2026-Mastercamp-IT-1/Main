@@ -4,10 +4,10 @@ def create_nodes(stops_list):
     nodes = []
     for stop in stops_list:
         nodes.append(Node(
-            id=stop.stop_id,
-            label=stop.stop_name,
-            x=float(stop.stop_lon),
-            y=float(stop.stop_lat)
+            id=stop[0],
+            label=stop[2],
+            x=stop[4],
+            y=stop[5]
         ))
     return nodes
 

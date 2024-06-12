@@ -33,7 +33,7 @@ def get_metro_pathways():
                 JOIN trips ON trips.trip_id = stop_times.trip_id
                 JOIN routes ON routes.route_id = trips.route_id
             WHERE routes.route_type = 1
-                           LIMIT 100 
+            GROUP BY stops.stop_name
             """)
             result = cursor.fetchall()
             return result

@@ -19,7 +19,7 @@ app.add_middleware(
 
 
 station_list = get_metro_stations()
-pathways_list = get_metro_pathways()
+transfer_list = get_metro_pathways()
 
 @app.get("/")
 async def root():
@@ -31,12 +31,12 @@ async def get_metro_nodes():
 
 @app.get("/edges")
 async def get_metro_edges():
-    return create_edges(pathways_list)
+    return create_edges(transfer_list, station_list)
 
 
 @app.get("/network")
 async def get_network():
     return {
         "nodes": create_nodes(station_list),
-        "edges": create_edges(pathways_list)
+        "edges": create_edges(transfer_list, station_list)
     }

@@ -125,10 +125,9 @@ class Node:
         self.color = "#000000"
 
 class Edge:
-    def __init__(self, source, target, label,time):
+    def __init__(self, source, target,time):
         self.source = source
         self.target = target
-        self.label = label
         self.time = time
         self.size = 1.0
         self.color = "#000000"

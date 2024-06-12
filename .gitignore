@@ -2,9 +2,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 
-
-data/stop_times.txt
-
 ### Django ###
 *.log
 *.pot
@@ -569,3 +566,4 @@ $RECYCLE.BIN/
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
+data/

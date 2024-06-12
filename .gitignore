@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,svelte,python,linux,jetbrains,flask,django,macos
 
+
+data/stop_times.txt
+
 ### Django ###
 *.log
 *.pot
@@ -393,7 +396,7 @@ fabric.properties
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*

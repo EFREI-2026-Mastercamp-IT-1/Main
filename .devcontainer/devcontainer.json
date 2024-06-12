@@ -9,7 +9,6 @@
 			"extensions": [
 				"ms-python.python",
 				"ms-python.pylint",
-				"PWABuilder.pwa-studio",
 				"hbenl.vscode-test-explorer",
 				"ms-vscode.test-adapter-converter",
 				"yzhang.markdown-all-in-one",

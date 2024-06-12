@@ -21,3 +21,4 @@ def create_edges(pathways_list):
             label=pathway.signposted_as
         ))
     return edges
+

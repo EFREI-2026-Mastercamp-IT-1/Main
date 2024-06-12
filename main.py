@@ -38,4 +38,5 @@ async def get_metro_edges():
 async def get_network():
     return {
         "nodes": create_nodes(station_list),
+        "edges": create_edges(pathways_list)
     }

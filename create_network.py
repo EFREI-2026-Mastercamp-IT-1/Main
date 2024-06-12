@@ -15,10 +15,10 @@ def create_edges(pathways_list):
     edges = []
     for pathway in pathways_list:
         edges.append(Edge(
-            id=pathway.pathway_id,
-            source=pathway.from_stop_id,
-            target=pathway.to_stop_id,
-            label=pathway.signposted_as
+            source=pathway[0],
+            target=pathway[1],
+            label= "",
+            time = pathway[2]
         ))
     return edges
 

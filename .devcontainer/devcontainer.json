@@ -28,5 +28,5 @@
 	// 	"source=profile-${localEnv:USER}${localEnv:USERNAME}-${devcontainerId},target=/home/vscode,type=volume", // persistent (named) volume for user profile
 	// 	"target=/home/vscode/.vscode-server,type=volume" // ephemeral volume for user-space VS Code extensions and dotfiles
 	// ],
-	"postCreateCommand": ". .devcontainer/postCreateScript.sh",
+	"onCreateCommand": ". .devcontainer/script/onCreate.sh",
 }

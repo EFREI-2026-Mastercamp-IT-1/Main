@@ -5,20 +5,23 @@ def create_nodes(stops_list):
     for stop in stops_list:
         nodes.append(Node(
             id=stop[0],
-            label=stop[2],
-            x=stop[4],
-            y=stop[5]
+            label=stop[1],
+            x=stop[2],
+            y=stop[3]
         ))
     return nodes
 
-def create_edges(transfer_list , stops_list):
+def create_edges(transfer_list, stops_list):
     edges = []
     for transfer in transfer_list:
-        if transfer[0] in [stop[0] for stop in stops_list] and transfer[1] in [stop[0] for stop in stops_list]:
+        source_id = transfer[0]
+        target_id = transfer[1]
+        time = transfer[2]
+        
+        if any(stop[0] == source_id for stop in stops_list) and any(stop[0] == target_id for stop in stops_list):
             edges.append(Edge(
-                source=transfer[0],
-                target=transfer[1],
-                time = transfer[2]
+                source=source_id,
+                target=target_id,
+                time=time
             ))
     return edges
-

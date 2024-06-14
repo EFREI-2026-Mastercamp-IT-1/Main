@@ -121,7 +121,7 @@ class Node:
         self.label = label
         self.x = x
         self.y = y
-        self.size = 1.0
+        self.size = 5.0
         self.color = "#000000"
 
 class Edge:
@@ -129,5 +129,5 @@ class Edge:
         self.source = source
         self.target = target
         self.time = time
-        self.size = 1.0
+        self.size = 5.0
         self.color = "#000000"

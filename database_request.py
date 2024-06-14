@@ -5,7 +5,7 @@ def get_metro_stations() -> list:
         with connect("data/database.db") as conn:
             cursor = conn.cursor()
             cursor.execute("""
-            SELECT *
+            SELECT stops.stop_id,stops.stop_name,stops.stop_lon,stops.stop_lat
             FROM stops
                 JOIN stop_times ON stop_times.stop_id = stops.stop_id
                 JOIN trips ON trips.trip_id = stop_times.trip_id
@@ -27,7 +27,7 @@ def get_metro_pathways():
             cursor = conn.cursor()
             cursor.execute("""
             SELECT from_stop_id, to_stop_id, min_transfer_time
-            FROM transfers  
+            FROM transfers
             """)
             result = cursor.fetchall()
             return result

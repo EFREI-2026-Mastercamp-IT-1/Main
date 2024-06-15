@@ -1,36 +1,52 @@
-from sqlite3 import connect, Error
+from sqlmodel import Field, SQLModel, create_engine, Session
+from enum import Enum
 
-def get_metro_stations() -> list:
-    try:
-        with connect("data/database.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-            SELECT stops.stop_id,stops.stop_name,stops.stop_lon,stops.stop_lat
-            FROM stops
-                JOIN stop_times ON stop_times.stop_id = stops.stop_id
-                JOIN trips ON trips.trip_id = stop_times.trip_id
-                JOIN routes ON routes.route_id = trips.route_id
-            WHERE routes.route_type = 1
-            GROUP BY stops.stop_name
-            """)
-            
-            result = cursor.fetchall()
-            return result
-        
-    except Error as e:
-        print(f"An error occurred: {e}")
-        return []
+engine = create_engine("data/database.db")
 
-def get_metro_pathways():
-    try:
-        with connect("data/database.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-            SELECT from_stop_id, to_stop_id, min_transfer_time
-            FROM transfers
-            """)
-            result = cursor.fetchall()
-            return result
-    except Error as e:
-        print(f"An error occurred: {e}")
-        return []
+
+class Stop(SQLModel, table=True):
+    stop_id: str = Field(primary_key=True)
+    stop_name: str
+    stop_lon: float
+    stop_lat: float
+
+
+class StopTime(SQLModel, table=True):
+    stop_id: int = Field(foreign_key="stop.stop_id")
+    trip_id: int
+
+
+class Trip(SQLModel, table=True):
+    trip_id: int = Field(primary_key=True)
+    route_id: int
+
+
+class Route(SQLModel, table=True):
+    class RouteType(Enum):
+        TRAMWAY = 0
+        METRO = 1
+        TRAIN = 2
+        BUS = 3
+        FUNICULAIRE = 7
+
+    route_id: int = Field(primary_key=True)
+    route_type: RouteType
+
+
+class Transfer(SQLModel, table=True):
+    from_stop_id: int = Field(foreign_key="stop.stop_id")
+    to_stop_id: int = Field(foreign_key="stop.stop_id")
+    min_transfer_time: int
+
+
+def get_metro_stations() -> list[Stop]:
+    with Session(engine) as session:
+        stops = session.exec(Stop.select().join(StopTime).join(Trip).join(
+            Route).where(Route.route_type == RouteType.metro.value).group_by(Stop.stop_name))
+        return stops
+
+
+def get_metro_pathways() -> list[Transfer]:
+    with Session(engine) as session:
+        transfers = session.exec(Transfer.select())
+        return transfers

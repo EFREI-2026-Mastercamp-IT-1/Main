@@ -11,6 +11,7 @@ class Stop(BaseModel):
     stop_sequence: int
     lon: float
     lat: float
+    stop_name: str
 
 def get_db_connection():
     conn = sqlite3.connect('mon_database.db')
@@ -28,20 +29,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/stops", response_model=List[Stop])
-def read_stops():
+@app.get("/stops/{line_name}", response_model=List[Stop])
+def read_stops(line_name: str):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ligne5 ORDER BY stop_sequence")
+    cursor.execute(f"SELECT * FROM {line_name} ORDER BY stop_sequence")
     stops = cursor.fetchall()
     return [Stop(**dict(stop)) for stop in stops]
 
-@app.get("/stop/{stop_id}", response_model=Stop)
-def read_stop(stop_id: str):
+@app.get("/stop/{line_name}/{stop_id}", response_model=Stop)
+def read_stop(line_name: str, stop_id: str):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ligne5 WHERE stop_id = ?", (stop_id,))
+    cursor.execute(f"SELECT * FROM {line_name} WHERE stop_id = ?", (stop_id,))
     stop = cursor.fetchone()
     if stop is None:
         raise HTTPException(status_code=404, detail="Stop not found")
     return Stop(**dict(stop))
+
+
+

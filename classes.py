@@ -44,13 +44,55 @@ class Calendar(SQLModel, table=True):
     TODO: Chose where to put the primary key
     """
 
-    monday: bool = Field(nullable=False)
-    tuesday: bool = Field(nullable=False)
-    wednesday: bool = Field(nullable=False)
-    thursday: bool = Field(nullable=False)
-    friday: bool = Field(nullable=False)
-    saturday: bool = Field(nullable=False)
-    sunday: bool = Field(nullable=False)
+    monday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    tuesday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    wednesday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    thursday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    friday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    saturday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
+    sunday: int = Field(nullable=False, ge=0, le=1)
+    """
+    ! BE CAREFUL !
+
+    - 0 == "Service Disponible"
+    - 1 == "Service Indisponible"
+    """
 
     start_date: str = Field(nullable=False)
     """

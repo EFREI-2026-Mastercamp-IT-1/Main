@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List
 import sqlite3
 from starlette.middleware.cors import CORSMiddleware
+from kruskal import Graph
 
 app = FastAPI()
 
@@ -48,4 +49,18 @@ def read_stop(line_name: str, stop_id: str):
     return Stop(**dict(stop))
 
 
+@app.get("/acpm")
+def get_kruskal():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("")
+    graph = cursor.fetchall()
+    
+    g = Graph(len(graph))
+    
+    for u, v, w in graph:
+        g.add_edge(u, v, w)
 
+    acpm = g.kruskal()
+    for u, v, weight in acpm:
+        print(f"point: {u} et point: {v}: poids: {weight}")

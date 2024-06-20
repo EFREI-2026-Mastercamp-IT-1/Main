@@ -39,23 +39,3 @@ class Graph:
                 if len(result) == self.V - 1:
                     break
         return result
-
-
-
-#test
-g = Graph(7)
-g.add_edge(0, 1, 4)
-g.add_edge(0, 2, 4)
-g.add_edge(1, 2, 2)
-g.add_edge(1, 3, 3)
-g.add_edge(2, 3, 2)
-g.add_edge(3, 4, 3)
-g.add_edge(3, 5, 4)
-g.add_edge(4, 5, 3)
-
-
-acpm = g.kruskal()
-
-
-for u, v, weight in acpm:
-    print(f"point: {u} et point: {v}: poids: {weight}")

@@ -593,3 +593,4 @@ $RECYCLE.BIN/
 
 data/
 !data/docs.pdf
+!data/original.tar.xz

@@ -23,7 +23,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:8000",
-        "http://localhost:63342",
+        "http://localhost:4000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -53,12 +53,14 @@ def read_stop(line_name: str, stop_id: str):
 def get_kruskal():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("")
-    graph = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) FROM new_table")
+    nb_vertices = cursor.fetchall()
+    g = Graph(nb_vertices)
     
-    g = Graph(len(graph))
+    cursor.execute("SELECT * FROM liaison")
+    liaisons = cursor.fetchall()
     
-    for u, v, w in graph:
+    for u, v, w in liaisons:
         g.add_edge(u, v, w)
 
     acpm = g.kruskal()

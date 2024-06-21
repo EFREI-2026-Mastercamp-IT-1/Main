@@ -65,5 +65,12 @@ def get_kruskal():
         g.add_edge(int(u), int(v), int(w))
 
     acpm = g.kruskal()
-    return acpm
+    
+    cursor.execute("SELECT stop_ids,id FROM new_table")
+    stop_ids = cursor.fetchall()
+    stop_ids = {id:stop_id for stop_id, id in stop_ids}
+        
+    acpm_id = [(stop_ids[u], stop_ids[v]) for u, v in acpm]
+    
+    return acpm_id
     

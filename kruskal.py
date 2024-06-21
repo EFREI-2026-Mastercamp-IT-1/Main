@@ -7,6 +7,7 @@ class Graph:
         self.edges.append((u, v, w))
 
     def find(self, parent, i):
+
         if parent[i] == i:
             return i
         parent[i] = self.find(parent, parent[i])
@@ -34,7 +35,7 @@ class Graph:
             x = self.find(parent, u)
             y = self.find(parent, v)
             if x != y:
-                result.append((u, v, w))
+                result.append((u, v))
                 self.union(parent, rank, x, y)
                 if len(result) == self.V - 1:
                     break

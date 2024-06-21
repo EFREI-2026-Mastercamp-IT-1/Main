@@ -53,16 +53,17 @@ def read_stop(line_name: str, stop_id: str):
 def get_kruskal():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM new_table")
+    cursor.execute("SELECT * FROM new_table")
     nb_vertices = cursor.fetchall()
+    nb_vertices = len(nb_vertices)
     g = Graph(nb_vertices)
     
-    cursor.execute("SELECT * FROM liaison")
-    liaisons = cursor.fetchall()
-    
+    cursor.execute("SELECT * FROM concatligne")
+    liaisons = [list(row) for row in cursor.fetchall()]
+            
     for u, v, w in liaisons:
-        g.add_edge(u, v, w)
+        g.add_edge(int(u), int(v), int(w))
 
     acpm = g.kruskal()
-    for u, v, weight in acpm:
-        print(f"point: {u} et point: {v}: poids: {weight}")
+    return acpm
+    

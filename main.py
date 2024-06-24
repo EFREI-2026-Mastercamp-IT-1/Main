@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import List
 import sqlite3
 from starlette.middleware.cors import CORSMiddleware
-from kruskal import Graph
-from dijkstra import GraphDijkstra
+from src.kruskal import Graph
+from src.dijkstra import GraphDijkstra
 
 app = FastAPI()
 
@@ -20,7 +20,7 @@ class DijkstraResponse(BaseModel):
     path: List[int]
 
 def get_db_connection():
-    conn = sqlite3.connect('mon_database.db')
+    conn = sqlite3.connect('src/mon_database.db')
     conn.row_factory = sqlite3.Row
     return conn
 

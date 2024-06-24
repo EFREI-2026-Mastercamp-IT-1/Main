@@ -1,6 +1,6 @@
 # the server
 
-## open virtual environement (usually automatic, but if you use codespaces you have to run it manually)
+## open virtual environement (needs to be run manually the first time)
 . .devcontainer/script/onCreate.sh
 
 ## install dependencies (normally done by the above command)

@@ -68,7 +68,7 @@ def get_kruskal():
     
     cursor.execute("SELECT stop_ids,id FROM new_table")
     stop_ids = cursor.fetchall()
-    stop_ids = {id:stop_id[:10] for stop_id, id in stop_ids}
+    stop_ids = {id: stop_id.split(',')[0] for stop_id, id in stop_ids}
         
     acpm_id = [(stop_ids[u], stop_ids[v]) for u, v in acpm]
     
@@ -87,7 +87,6 @@ def get_kruskal_points():
         if v not in points:
             points.append(v)
             
-    #create Stop objects with the list of points
     
     lines = ["ligne1","ligne2","ligne3","ligne3b", "ligne4", "ligne5", "ligne6", "ligne7", "ligne7b", "ligne8", "ligne9", "ligne10", "ligne11", "ligne12", "ligne13", "ligne14"]
 

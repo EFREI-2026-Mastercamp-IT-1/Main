@@ -29,6 +29,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:8000",
         "http://localhost:4000",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -137,8 +138,44 @@ def get_dijkstra(src: int, dest: int):
 
 @app.get("/stations/")
 def read_stations():
+    lines = ["ligne1","ligne2","ligne3","ligne3b", "ligne4", "ligne5", "ligne6", "ligne7", "ligne7b", "ligne8", "ligne9", "ligne10", "ligne11", "ligne12", "ligne13", "ligne14"]
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM new_table")
-    stations = cursor.fetchall()
+    stations = []
+    for line in lines:
+        cursor.execute(f"""
+            SELECT nt.*, l.lon, l.lat, l.stop_sequence, l.stop_id as line_stop_id
+            FROM new_table nt
+            JOIN {line} l ON nt.stop_ids LIKE '%' || l.stop_id || '%'
+            ORDER BY l.stop_sequence
+        """)
+        line_stations = cursor.fetchall()
+        for i, station in enumerate(line_stations):
+            station_dict = dict(station)
+            station_dict["line"] = line
+            # Add the stop_id of the next station
+            if i < len(line_stations) - 1:
+                next_station_id = line_stations[i + 1]["line_stop_id"]
+                cursor.execute(f"""
+                    SELECT id
+                    FROM new_table
+                    WHERE stop_ids LIKE '%' || ? || '%'
+                """, (next_station_id,))
+                next_station_new_table_id = cursor.fetchone()
+                station_dict["next_stop_id"] = next_station_new_table_id["id"] if next_station_new_table_id else ""
+            else:
+                station_dict["next_stop_id"] = ""
+            # Add the stop_id of the previous station
+            if i > 0:
+                prev_station_id = line_stations[i - 1]["line_stop_id"]
+                cursor.execute(f"""
+                    SELECT id
+                    FROM new_table
+                    WHERE stop_ids LIKE '%' || ? || '%'
+                """, (prev_station_id,))
+                prev_station_new_table_id = cursor.fetchone()
+                station_dict["prev_stop_id"] = prev_station_new_table_id["id"] if prev_station_new_table_id else ""
+            else:
+                station_dict["prev_stop_id"] = ""
+            stations.append(station_dict)
     return stations

@@ -6,6 +6,8 @@ from starlette.middleware.cors import CORSMiddleware
 from src.kruskal import Graph
 from src.dijkstra import GraphDijkstra
 from datetime import datetime, timedelta
+import pickle
+
 
 
 app: FastAPI = FastAPI()
@@ -25,7 +27,7 @@ class DijkstraResponse(BaseModel):
     path: List[int]
     
     
-class TripResponse(BaseModel):
+class DijkstraV2Response(BaseModel):
     total_time: int
     path: List[dict]
     arrival_time: str
@@ -46,6 +48,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Charger le graphe précalculé
+with open('src/precalculated_graph.pkl', 'rb') as f:
+    precalculated_graph = pickle.load(f)
 
 @app.get("/stops/{line_name}", response_model=List[Stop])
 def read_stops(line_name: str) -> List[Stop]:
@@ -129,30 +135,6 @@ def get_kruskal_points() -> List[Stop]:
 
     return points
 
-@app.get("/dijkstra/{src}/{dest}", response_model=DijkstraResponse)
-def get_dijkstra(src: int, dest: int) -> DijkstraResponse:
-    conn: sqlite3.Connection = get_db_connection()
-    cursor: sqlite3.Cursor = conn.cursor()
-
-    cursor.execute("SELECT COUNT(*) FROM new_table")
-    nb_vertices: int = cursor.fetchone()[0]
-
-    g: GraphDijkstra = GraphDijkstra(nb_vertices)
-
-    cursor.execute("SELECT * FROM concatligne")
-    liaisons: List[List[str]] = [list(row) for row in cursor.fetchall()]
-
-    for u, v, w in liaisons:
-        g.graph[int(u)][int(v)] = int(w)
-        g.graph[int(v)][int(u)] = int(w)  # Assuming undirected graph
-
-    if src >= nb_vertices or src < 0 or dest >= nb_vertices or dest < 0:
-        raise HTTPException(status_code=400, detail="Invalid source or destination vertex")
-
-    distance, path = g.shortest_path(src, dest)
-
-    return DijkstraResponse(distance=distance, path=path)
-
 
 @app.get("/stations/")
 def read_stations() -> List[Dict[str, str]]:
@@ -211,60 +193,32 @@ def read_stations() -> List[Dict[str, str]]:
             stations.append(station_dict)
     return stations
 
-@app.get("/dijkstraV2/{src_stop_id}/{dest_stop_id}/{start_time}", response_model=TripResponse)
+
+@app.get("/dijkstraV2/{src_stop_id}/{dest_stop_id}/{start_time}", response_model=DijkstraV2Response)
 def get_dijkstraV2(src_stop_id: str, dest_stop_id: str, start_time: str):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Vérifier si les arrêts existent
-    cursor.execute("SELECT stop_id, stop_name FROM stops WHERE stop_id IN (?, ?)", 
-                   (src_stop_id, dest_stop_id))
+    # Vérifier si les arrêts existent et sont des arrêts de métro
+    cursor.execute("""
+        SELECT s.stop_id, s.stop_name
+        FROM stops s
+        JOIN stop_times st ON s.stop_id = st.stop_id
+        JOIN trips t ON st.trip_id = t.trip_id
+        JOIN routes r ON t.route_id = r.route_id
+        WHERE s.stop_id IN (?, ?) AND r.route_type = 1
+        GROUP BY s.stop_id
+    """, (src_stop_id, dest_stop_id))
     stops = {row['stop_id']: row['stop_name'] for row in cursor.fetchall()}
     
     if len(stops) != 2:
-        raise HTTPException(status_code=400, detail="Invalid source or destination stop")
+        raise HTTPException(status_code=400, detail="Invalid source or destination stop, or not a metro stop")
 
-    # Obtenir le nombre total d'arrêts pour la taille du graphe
-    cursor.execute("SELECT COUNT(DISTINCT stop_id) FROM stops")
-    nb_vertices = cursor.fetchone()[0]
-    print(nb_vertices)
-    
-    # Créer le graphe
-    g = GraphDijkstra(nb_vertices)
-
-    # Ajouter les arêtes au graphe
-    cursor.execute("""
-        SELECT t1.stop_id as from_stop, t2.stop_id as to_stop, 
-               t1.departure_time, t2.arrival_time, t1.trip_id
-        FROM stop_times t1
-        JOIN stop_times t2 ON t1.trip_id = t2.trip_id AND t1.stop_sequence = t2.stop_sequence - 1
-        JOIN trips ON t1.trip_id = trips.trip_id
-        JOIN calendar ON trips.service_id = calendar.service_id
-        WHERE calendar.start_date <= ? AND calendar.end_date >= ?
-    """, (start_time[:10], start_time[:10]))
-    
-    stop_times = cursor.fetchall()
-    
-    for row in stop_times:
-        u = row['from_stop']
-        v = row['to_stop']
-        departure_time = datetime.strptime(row['departure_time'], "%H:%M:%S")
-        arrival_time = datetime.strptime(row['arrival_time'], "%H:%M:%S")
-        weight = (arrival_time - departure_time).seconds
-        
-        g.add_edge(u, v, weight, departure_time)
-
-    # Ajouter les temps de correspondance
-    cursor.execute("SELECT * FROM transfers")
-    transfers = cursor.fetchall()
-    for transfer in transfers:
-        u = transfer['from_stop_id']
-        v = transfer['to_stop_id']
-        min_transfer_time = transfer['min_transfer_time']
-        g.add_edge(u, v, min_transfer_time, timedelta(seconds=0))
+    # Utiliser le graphe précalculé
+    g = precalculated_graph
 
     # Calculer le chemin le plus court
-    start_time = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    start_time = datetime.strptime(start_time,  "%H:%M:%S")
     total_time, path, arrival_time = g.shortest_path(src_stop_id, dest_stop_id, start_time)
 
     if total_time == float('inf'):
@@ -279,7 +233,8 @@ def get_dijkstraV2(src_stop_id: str, dest_stop_id: str, start_time: str):
             JOIN stop_times ON stops.stop_id = stop_times.stop_id
             JOIN trips ON stop_times.trip_id = trips.trip_id
             JOIN routes ON trips.route_id = routes.route_id
-            WHERE stops.stop_id = ?
+            WHERE stops.stop_id = ? AND routes.route_type = 1
+            LIMIT 1
         """, (path[i],))
         stop_info = cursor.fetchone()
         trip_details.append({
@@ -289,8 +244,7 @@ def get_dijkstraV2(src_stop_id: str, dest_stop_id: str, start_time: str):
             "route_name": stop_info['route_long_name'],
             "trip_headsign": stop_info['trip_headsign']
         })
-
-    return TripResponse(
+    return DijkstraV2Response(
         total_time=int(total_time),
         path=trip_details,
         arrival_time=arrival_time.strftime("%Y-%m-%d %H:%M:%S")

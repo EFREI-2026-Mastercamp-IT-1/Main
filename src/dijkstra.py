@@ -2,23 +2,21 @@ import heapq
 from datetime import timedelta
 
 class GraphDijkstra:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = [{} for _ in range(vertices)]
+    def __init__(self):
+        self.graph = {}
 
     def add_edge(self, u, v, weight, departure_time):
-        u = int(u.split(':')[1])
-        v = int(v.split(':')[1])
-        
+        if u not in self.graph:
+            self.graph[u] = {}
         if v not in self.graph[u]:
             self.graph[u][v] = []
         self.graph[u][v].append((weight, departure_time))
 
     def dijkstra(self, src, start_time):
-        dist = [(float('inf'), None) for _ in range(self.V)]
+        dist = {node: (float('inf'), None) for node in self.graph}
         dist[src] = (0, start_time)
         pq = [(0, start_time, src)]
-        parent = [-1] * self.V
+        parent = {node: None for node in self.graph}
 
         while pq:
             current_dist, current_time, u = heapq.heappop(pq)
@@ -26,10 +24,10 @@ class GraphDijkstra:
             if current_dist > dist[u][0]:
                 continue
 
-            for v in self.graph[u]:
+            for v in self.graph.get(u, {}):
                 for weight, departure_time in self.graph[u][v]:
                     if departure_time >= current_time:
-                        wait_time = (departure_time - current_time).total_seconds()
+                        wait_time = departure_time - current_time
                         new_dist = current_dist + weight + wait_time
                         new_time = departure_time + timedelta(seconds=weight)
                         if new_dist < dist[v][0]:
@@ -41,12 +39,12 @@ class GraphDijkstra:
 
     def shortest_path(self, src, dest, start_time):
         dist, parent = self.dijkstra(src, start_time)
-        path = []
-        if dist[dest][0] == float('inf'):
-            return float('inf'), path, None
+        if dest not in dist:
+            return float('inf'), [], None
 
+        path = []
         current = dest
-        while current != -1:
+        while current is not None:
             path.insert(0, current)
             current = parent[current]
 

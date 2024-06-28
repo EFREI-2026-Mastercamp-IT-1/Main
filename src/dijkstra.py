@@ -48,6 +48,3 @@ class GraphDijkstra:
 
         return dist[dest], path
 
-    def replace_inf(self, dist):
-        max_value = 1e7
-        return [d if d != float('inf') else max_value for d in dist]

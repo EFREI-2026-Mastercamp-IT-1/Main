@@ -9,7 +9,9 @@
 
   env = {};
   idx = {
-    extensions = [];
+    extensions = [
+      "christian-kohler.path-intellisense"
+    ];
 
     previews = {
       enable = true;

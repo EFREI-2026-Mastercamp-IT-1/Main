@@ -3,8 +3,10 @@ import sqlite3
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
+
 from src.kruskal import Graph
 from src.dijkstra import GraphDijkstra
+from src.request_caching import get_cached_result, cache_result
 
 app: FastAPI = FastAPI()
 
@@ -80,7 +82,6 @@ def get_kruskal() -> List[tuple[str, str]]:
     cursor.execute("SELECT stop_ids,id FROM new_table")
     stop_ids: List[Tuple[str, int]] = cursor.fetchall()
     stop_ids: Dict[int, str] = {id: stop_id.split(',')[0] for stop_id, id in stop_ids}
-
     acpm_id: List[tuple[str, str]] = [(stop_ids[u], stop_ids[v]) for u, v in acpm]
 
     return acpm_id
@@ -89,7 +90,6 @@ def get_kruskal() -> List[tuple[str, str]]:
 @app.get("/acpm/points")
 def get_kruskal_points() -> List[Stop]:
     kruskal: List[Tuple[str, str]] = get_kruskal()
-
     points: List[str] = []
 
     for u, v in kruskal:
@@ -97,7 +97,6 @@ def get_kruskal_points() -> List[Stop]:
             points.append(u)
         if v not in points:
             points.append(v)
-
 
     lines: List[str] = [
         "ligne1",
@@ -110,19 +109,20 @@ def get_kruskal_points() -> List[Stop]:
     cursor: sqlite3.Cursor = conn.cursor()
 
     stops: List[Stop] = []
-
     for line in lines:
         cursor.execute(f"SELECT * FROM {line}")
         stops += cursor.fetchall()
 
     stops: List[Stop] = [Stop(**dict(stop)) for stop in stops]
-
     points: List[Stop] = [stop for stop in stops if stop.stop_id in points]
 
     return points
 
 @app.get("/dijkstra/{src}/{dest}", response_model=DijkstraResponse)
 def get_dijkstra(src: int, dest: int) -> DijkstraResponse:
+    """
+    implements dijkstra algorithm
+    """
     conn: sqlite3.Connection = get_db_connection()
     cursor: sqlite3.Cursor = conn.cursor()
 
@@ -148,9 +148,7 @@ def get_dijkstra(src: int, dest: int) -> DijkstraResponse:
 
 @app.get("/stations/")
 def read_stations() -> List[Dict[str, str]]:
-    """
-    I don't know what this function does
-    """
+    """reads all stations from the database"""
     lines = [
         "ligne1","ligne2","ligne3","ligne3b", "ligne4", "ligne5", 
         "ligne6", "ligne7", "ligne7b", "ligne8", "ligne9", 

@@ -6,12 +6,12 @@ class GraphDijkstra:
                       for row in range(vertices)]
 
     def minDistance(self, dist, sptSet):
-        min = float('inf')
+        minimum = float('inf')
         min_index = -1
 
         for v in range(self.V):
-            if dist[v] < min and not sptSet[v]:
-                min = dist[v]
+            if dist[v] < minimum and not sptSet[v]:
+                minimum = dist[v]
                 min_index = v
 
         return min_index

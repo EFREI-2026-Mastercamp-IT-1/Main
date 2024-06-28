@@ -1,5 +1,5 @@
 class agency():
-    def __init__(self, agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_email,agency_fare_url):
+    def __init__(self, agency_id: str, agency_name: str, agency_url: str, agency_timezone: str, agency_lang: str, agency_phone: str, agency_email: str, agency_fare_url: str):
         self.agency_id = agency_id
         self.agency_name = agency_name
         self.agency_url = agency_url
@@ -9,8 +9,9 @@ class agency():
         self.agency_email = agency_email
         self.agency_fare_url = agency_fare_url
 
+
 class route():
-    def __init__(self, route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color,route_sort_order):
+    def __init__(self, route_id: str, agency_id: str, route_short_name: str, route_long_name: str, route_desc: str, route_type: int, route_url: str, route_color: str, route_text_color: str,route_sort_order: int):
         self.route_id = route_id
         self.agency_id = agency_id
         self.route_short_name = route_short_name
@@ -23,7 +24,7 @@ class route():
         self.route_sort_order = route_sort_order
 
 class trips():
-    def __init__(self, route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,wheelchair_accessible,bikes_allowed):
+    def __init__(self, route_id: str, service_id: str, trip_id: str, trip_headsign: str, trip_short_name: str, direction_id: int, block_id: str, shape_id: str, wheelchair_accessible: int, bikes_allowed: int):
         self.route_id = route_id
         self.service_id = service_id
         self.trip_id = trip_id
@@ -36,7 +37,7 @@ class trips():
         self.bikes_allowed = bikes_allowed
 
 class calendar():
-    def __init__(self, service_id, monday, tuesday, wednesday, thursday, friday, saturday, sunday, start_date, end_date):
+    def __init__(self, service_id: str, monday: int, tuesday: int, wednesday: int, thursday: int, friday: int, saturday: int, sunday: int, start_date: str, end_date: str):
         self.service_id = service_id
         self.monday = monday
         self.tuesday = tuesday
@@ -55,7 +56,7 @@ class calendar_dates():
         self.exception_type = exception_type
 
 class stop_times():
-    def __init__(self, trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,local_zone_id,stop_headsign,timepoint):
+    def __init__(self, trip_id: str, arrival_time: str, departure_time: str, stop_id: str, stop_sequence: int, pickup_type: int, drop_off_type: int, local_zone_id: str, stop_headsign: str, timepoint: int):
         self.trip_id = trip_id
         self.arrival_time = arrival_time
         self.departure_time = departure_time
@@ -68,7 +69,7 @@ class stop_times():
         self.timepoint = timepoint
 
 class stops():
-    def __init__(self, stop_id,stop_code,stop_name,stop_desc,stop_lon,stop_lat,zone_id,stop_url,location_type,parent_station,stop_timezone,level_id,wheelchair_boarding,platform_code):
+    def __init__(self, stop_id: str,stop_code: str,stop_name: str,stop_desc: str,stop_lon: float,stop_lat: float,zone_id: str,stop_url: str,location_type: int,parent_station: str,stop_timezone: str,level_id: str,wheelchair_boarding: int,platform_code: str):
         self.stop_id = stop_id
         self.stop_code = stop_code
         self.stop_name = stop_name
@@ -85,20 +86,20 @@ class stops():
         self.platform_code = platform_code
 
 class transfer():
-    def __init__(self, from_stop_id,to_stop_id,transfer_type,min_transfer_time):
+    def __init__(self, from_stop_id: str, to_stop_id: str, transfer_type: int, min_transfer_time: int):
         self.from_stop_id = from_stop_id
         self.to_stop_id = to_stop_id
         self.transfer_type = transfer_type
         self.min_transfer_time = min_transfer_time
 
 class stop_extensions():
-    def __init__(self,object_id,object_system,object_code):
+    def __init__(self,object_id: str,object_system: str,object_code: str):
         self.object_id = object_id
         self.object_system = object_system
         self.object_code = object_code
 
 class pathways():
-    def __init__(self,pathway_id,from_stop_id,to_stop_id,pathway_mode,is_bidirectional,length,traversal_time,stair_count,max_slope,min_width,signposted_as,reversed_signposted_as):
+    def __init__(self, pathway_id: str, from_stop_id: str, to_stop_id: str, pathway_mode: int, is_bidirectional: int, length: float, traversal_time: int, stair_count: int, max_slope: float, min_width: float, signposted_as: str, reversed_signposted_as: str):
         self.pathway_id = pathway_id
         self.from_stop_id = from_stop_id
         self.to_stop_id = to_stop_id

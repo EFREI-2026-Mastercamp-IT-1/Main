@@ -7,6 +7,9 @@ class GraphDijkstra:
         self.graph = [{} for _ in range(vertices)]
 
     def add_edge(self, u, v, weight, departure_time):
+        u = int(u.split(':')[1])
+        v = int(v.split(':')[1])
+        
         if v not in self.graph[u]:
             self.graph[u][v] = []
         self.graph[u][v].append((weight, departure_time))

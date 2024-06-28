@@ -227,6 +227,7 @@ def get_dijkstraV2(src_stop_id: str, dest_stop_id: str, start_time: str):
     # Obtenir le nombre total d'arrêts pour la taille du graphe
     cursor.execute("SELECT COUNT(DISTINCT stop_id) FROM stops")
     nb_vertices = cursor.fetchone()[0]
+    print(nb_vertices)
     
     # Créer le graphe
     g = GraphDijkstra(nb_vertices)
@@ -250,6 +251,7 @@ def get_dijkstraV2(src_stop_id: str, dest_stop_id: str, start_time: str):
         departure_time = datetime.strptime(row['departure_time'], "%H:%M:%S")
         arrival_time = datetime.strptime(row['arrival_time'], "%H:%M:%S")
         weight = (arrival_time - departure_time).seconds
+        
         g.add_edge(u, v, weight, departure_time)
 
     # Ajouter les temps de correspondance

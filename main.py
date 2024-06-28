@@ -6,9 +6,12 @@ from starlette.middleware.cors import CORSMiddleware
 from src.kruskal import Graph
 from src.dijkstra import GraphDijkstra
 
-app = FastAPI()
+app: FastAPI = FastAPI()
 
 class Stop(BaseModel):
+    """
+    Class representing a stop.
+    """
     stop_id: str
     stop_sequence: int
     lon: float

@@ -51,7 +51,9 @@ def read_stops(line_name: str) -> List[Stop]:
 def read_stop(line_name: str, stop_id: str) -> Stop:
     conn: sqlite3.Connection = get_db_connection()
     cursor: sqlite3.Cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM {line_name} WHERE stop_id = ?", (stop_id,))
+    cursor.execute(
+        f"SELECT * FROM {line_name} WHERE stop_id = ?", (stop_id,)
+        )
     stop: dict = cursor.fetchone()
     if stop is None:
         raise HTTPException(status_code=404, detail="Stop not found")
@@ -100,7 +102,8 @@ def get_kruskal_points() -> List[Stop]:
     lines: List[str] = [
         "ligne1",
         "ligne2","ligne3","ligne3b", "ligne4", "ligne5", "ligne6", 
-        "ligne7", "ligne7b", "ligne8", "ligne9", "ligne10", "ligne11", "ligne12", "ligne13", "ligne14"
+        "ligne7", "ligne7b", "ligne8", "ligne9", "ligne10", 
+        "ligne11", "ligne12", "ligne13", "ligne14"
         ]
 
     conn: sqlite3.Connection = get_db_connection()
@@ -145,47 +148,57 @@ def get_dijkstra(src: int, dest: int) -> DijkstraResponse:
 
 @app.get("/stations/")
 def read_stations() -> List[Dict[str, str]]:
+    """
+    I don't know what this function does
+    """
     lines = [
-        "ligne1","ligne2","ligne3","ligne3b", "ligne4", "ligne5", "ligne6", "ligne7", "ligne7b", "ligne8", "ligne9", 
+        "ligne1","ligne2","ligne3","ligne3b", "ligne4", "ligne5", 
+        "ligne6", "ligne7", "ligne7b", "ligne8", "ligne9", 
         "ligne10", "ligne11", "ligne12", "ligne13", "ligne14"
         ]
     conn: sqlite3.Connection = get_db_connection()
     cursor: sqlite3.Cursor = conn.cursor()
     stations: List[Dict[str, str]] = []
     for line in lines:
-        cursor.execute(f"""
+        cursor.execute(
+        f"""
             SELECT nt.*, l.lon, l.lat, l.stop_sequence, l.stop_id as line_stop_id
             FROM new_table nt
             JOIN {line} l ON nt.stop_ids LIKE '%' || l.stop_id || '%'
             ORDER BY l.stop_sequence
-        """)
+        """
+        )
         line_stations: List[Dict[str, str]] = cursor.fetchall()
         for i, station in enumerate(line_stations):
             station_dict: dict = dict(station)
-            station_dict["line"] = line
+            station_dict["line"]: str = line
             # Add the stop_id of the next station
             if i < len(line_stations) - 1:
                 next_station_id: str = line_stations[i + 1]["line_stop_id"]
-                cursor.execute(f"""
+                cursor.execute(
+                f"""
                     SELECT id
                     FROM new_table
                     WHERE stop_ids LIKE '%' || ? || '%'
-                """, (next_station_id,))
+                """, (next_station_id,)
+                )
                 next_station_new_table_id: Dict[str, int] = cursor.fetchone()
-                station_dict["next_stop_id"] = next_station_new_table_id["id"] if next_station_new_table_id else ""
+                station_dict["next_stop_id"]: str = next_station_new_table_id["id"] if next_station_new_table_id else ""
             else:
-                station_dict["next_stop_id"] = ""
+                station_dict["next_stop_id"]: str = ""
             # Add the stop_id of the previous station
             if i > 0:
                 prev_station_id: str = line_stations[i - 1]["line_stop_id"]
-                cursor.execute(f"""
+                cursor.execute(
+                f"""
                     SELECT id
                     FROM new_table
                     WHERE stop_ids LIKE '%' || ? || '%'
-                """, (prev_station_id,))
+                """, (prev_station_id,)
+                )
                 prev_station_new_table_id: Dict[str, int] = cursor.fetchone()
-                station_dict["prev_stop_id"] = prev_station_new_table_id["id"] if prev_station_new_table_id else ""
+                station_dict["prev_stop_id"]: str = prev_station_new_table_id["id"] if prev_station_new_table_id else ""
             else:
-                station_dict["prev_stop_id"] = ""
+                station_dict["prev_stop_id"]: str = ""
             stations.append(station_dict)
     return stations

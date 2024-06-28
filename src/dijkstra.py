@@ -1,50 +1,50 @@
-class GraphDijkstra:
+import heapq
+from datetime import timedelta
 
+class GraphDijkstra:
     def __init__(self, vertices):
         self.V = vertices
-        self.graph = [[0 for column in range(vertices)]
-                      for row in range(vertices)]
+        self.graph = [{} for _ in range(vertices)]
 
-    def minDistance(self, dist, sptSet):
-        minimum = float('inf')
-        min_index = -1
+    def add_edge(self, u, v, weight, departure_time):
+        if v not in self.graph[u]:
+            self.graph[u][v] = []
+        self.graph[u][v].append((weight, departure_time))
 
-        for v in range(self.V):
-            if dist[v] < minimum and not sptSet[v]:
-                minimum = dist[v]
-                min_index = v
+    def dijkstra(self, src, start_time):
+        dist = [(float('inf'), None) for _ in range(self.V)]
+        dist[src] = (0, start_time)
+        pq = [(0, start_time, src)]
+        parent = [-1] * self.V
 
-        return min_index
+        while pq:
+            current_dist, current_time, u = heapq.heappop(pq)
 
-    def dijkstra(self, src):
-        dist = [float('inf')] * self.V
-        dist[src] = 0
-        sptSet = [False] * self.V
-        parent = [-1] * self.V  # To store the path
+            if current_dist > dist[u][0]:
+                continue
 
-        for cout in range(self.V):
-            u = self.minDistance(dist, sptSet)
-            sptSet[u] = True
-
-            for v in range(self.V):
-                if (self.graph[u][v] > 0 and
-                        not sptSet[v] and
-                        dist[v] > dist[u] + self.graph[u][v]):
-                    dist[v] = dist[u] + self.graph[u][v]
-                    parent[v] = u
+            for v in self.graph[u]:
+                for weight, departure_time in self.graph[u][v]:
+                    if departure_time >= current_time:
+                        wait_time = (departure_time - current_time).total_seconds()
+                        new_dist = current_dist + weight + wait_time
+                        new_time = departure_time + timedelta(seconds=weight)
+                        if new_dist < dist[v][0]:
+                            dist[v] = (new_dist, new_time)
+                            parent[v] = u
+                            heapq.heappush(pq, (new_dist, new_time, v))
 
         return dist, parent
 
-    def shortest_path(self, src, dest):
-        dist, parent = self.dijkstra(src)
+    def shortest_path(self, src, dest, start_time):
+        dist, parent = self.dijkstra(src, start_time)
         path = []
-        if dist[dest] == float('inf'):
-            return float('inf'), path
+        if dist[dest][0] == float('inf'):
+            return float('inf'), path, None
 
         current = dest
         while current != -1:
             path.insert(0, current)
             current = parent[current]
 
-        return dist[dest], path
-
+        return dist[dest][0], path, dist[dest][1]
